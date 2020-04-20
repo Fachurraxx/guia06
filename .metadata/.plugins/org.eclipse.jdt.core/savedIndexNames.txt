@@ -1,0 +1,16 @@
+INDEX VERSION 1.131+C:\Users\Rama\git\guia06\.metadata\.plugins\org.eclipse.jdt.core
+2208479116.index
+1015532737.index
+1290187554.index
+1129557708.index
+920563011.index
+4030698020.index
+1482736573.index
+991077252.index
+563509232.index
+913934781.index
+1374681247.index
+1066143761.index
+3657305784.index
+3384479478.index
+353731078.index

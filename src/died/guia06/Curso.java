@@ -1,6 +1,9 @@
 package died.guia06;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import died.guia06.util.Registro;
@@ -13,6 +16,9 @@ import died.guia06.util.Registro;
  * @author marti
  *
  */
+
+
+
 public class Curso {
 
 	private Integer id;
@@ -31,31 +37,140 @@ public class Curso {
 		this.log = new Registro();
 	}
 	
-
-	/**
-	 * Este método, verifica si el alumno se puede inscribir y si es así lo agrega al curso,
-	 * agrega el curso a la lista de cursos en los que está inscripto el alumno y retorna verdadero.
-	 * Caso contrario retorna falso y no agrega el alumno a la lista de inscriptos ni el curso a la lista
-	 * de cursos en los que el alumno está inscripto.
-	 * 
-	 * Para poder inscribirse un alumno debe
-	 * 		a) tener como minimo los creditos necesarios
-	 *      b) tener cupo disponibles
-	 *      c) puede estar inscripto en simultáneo a no más de 3 cursos del mismo ciclo lectivo.
-	 * @param a
-	 * @return
-	 */
-	public Boolean inscribir(Alumno a) {
-		log.registrar(this, "inscribir ",a.toString());
-		return false;
+	public Curso(Integer cup, Integer cred, Integer credReq) {
+		super();
+		this.inscriptos = new ArrayList<Alumno>();
+		this.log = new Registro();
+		this.creditos = cred;
+		this.cupo = cup;
+		this.creditosRequeridos=credReq;
+	}
+	public Curso(Integer id, String nom, Integer ciclo, Integer cup, Integer cred, Integer credReq) {
+		super();
+		this.id = id;
+		this.nombre=nom;
+		this.cicloLectivo = ciclo;
+		this.inscriptos = new ArrayList<Alumno>();
+		this.log = new Registro();
+		this.creditos = cred;
+		this.cupo = cup;
+		this.creditosRequeridos=credReq;
 	}
 	
+	public void inscribirAlumno(Alumno a) throws CursoException {
+		
+		if(a.getCursando().size()==3) {
+			throw new CursoException("ERROR: El alumno " + a.getNombre() + " no puede cursar "+this.nombre + " porque no puede cursar mas de 3 materias a la vez");
+		}
+		
+		if(this.creditosRequeridos > a.creditosObtenidos()) {
+			throw new CursoException("ERROR: El alumno "+a.getNombre() +  " no tiene los creditos requeridos para inscribirse a " + this.nombre);
+		}
+		
+		if(this.cupo <= this.inscriptos.size()) {
+			throw new CursoException("ERROR: El alumno " +a.getNombre() +" no pudo inscribirse a "
+					+ this.nombre + ". El curso ya tiene el cupo completo");
+		}
+		
+		inscriptos.add(a);
+		a.inscripcionAceptada(this);
+		
+		 
+	 }
 	
-	/**
-	 * imprime los inscriptos en orden alfabetico
-	 */
-	public void imprimirInscriptos() {
+	
+	
+	public Boolean inscribir(Alumno a) {
+		try {
+			if(a.getCursando().size()<3 & this.cupo > this.inscriptos.size() & this.creditosRequeridos <= a.creditosObtenidos() & !(this.inscriptos.contains(a))) {
+			inscriptos.add(a);
+			a.inscripcionAceptada(this);
+			log.registrar(this, "inscribir ",a.toString());
+			}
+			else return false;
+		}
+		catch(IOException ex){
+			ex.getMessage();
+			return false;
+		}
+		return true;
+	}
+	
+	public void imprimirInscriptosAlfabeticamente() {
+		try {
+			Collections.sort(inscriptos, new Comparator<Alumno>() {
+			public int compare(Alumno a1, Alumno a2) {
+				return  a1.getNombre().compareTo(a2.getNombre());
+			}
+		});
 		log.registrar(this, "imprimir listado",this.inscriptos.size()+ " registros ");
+		}
+		catch(IOException ex) {
+			ex.getMessage();
+		}
+		System.out.println("Alumnos inscriptos ordenados alfabeticamente al curso: " + this.nombre);
+		for(int i=0;i<inscriptos.size();i++) {
+		System.out.println(inscriptos.get(i).getNombre());
+		}
+		System.out.println("");
+	}
+	
+	public void imprimirInscriptosNroLibreta() {
+		try {
+			Collections.sort(inscriptos, new Comparator<Alumno>() {
+			public int compare(Alumno a1, Alumno a2) {
+				return  a1.getNroLibreta().compareTo(a2.getNroLibreta());
+			}
+		});
+		log.registrar(this, "imprimir listado",this.inscriptos.size()+ " registros ");
+		}
+		catch(IOException ex) {
+			ex.getMessage();
+		}
+		System.out.println("Alumnos inscriptos ordenados por numero de libreta al curso: " + this.nombre);
+		for(int i=0;i<inscriptos.size();i++) {
+			System.out.println(inscriptos.get(i).getNombre());
+			}
+		System.out.println("");
+	}
+	
+	public void imprimirInscriptosCreditos() {
+		try {
+			Collections.sort(inscriptos, new Comparator<Alumno>() {
+			public int compare(Alumno a1, Alumno a2) {
+				return  a1.creditosObtenidos().compareTo(a2.creditosObtenidos());
+			}
+		});
+		log.registrar(this, "imprimir listado",this.inscriptos.size()+ " registros ");
+		}
+		catch(IOException ex) {
+			ex.getMessage();
+		}
+		System.out.println("Alumnos inscriptos ordenados por creditos obtenidos  al curso: " + this.nombre);
+		for(int i=0;i<inscriptos.size();i++) {
+			System.out.println(inscriptos.get(i).getNombre());
+			}
+		System.out.println("");
+	}
+	
+	public List<Alumno> getInscriptos() {
+		return inscriptos;
+	}
+
+	public void setInscriptos(List<Alumno> inscriptos) {
+		this.inscriptos = inscriptos;
+	}
+
+	public boolean equals(Curso c){ 
+		return (c.id == this.id);
+	}
+	
+	public Integer getCreditos() {
+		return creditos;
+	}
+
+	public void setCreditos(Integer creditos) {
+		this.creditos = creditos;
 	}
 
 
