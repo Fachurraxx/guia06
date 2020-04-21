@@ -36,8 +36,8 @@ public class App {
 		curso3.imprimirInscriptosCreditos();
 		curso3.imprimirInscriptosNroLibreta();
 		
-		
 		alumno3.aprobar(curso3);
+		
 		curso3.imprimirInscriptosAlfabeticamente();
 		
 		System.out.println("Creditos obtenidos:" + alumno3.creditosObtenidos());

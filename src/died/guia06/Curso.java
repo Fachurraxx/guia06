@@ -8,16 +8,6 @@ import java.util.List;
 
 import died.guia06.util.Registro;
 
-/**
- * Clase que representa un curso. Un curso se identifica por su ID y por su nombre y ciclo lectivo.
- * Un curso guarda una lista de los inscriptos actuales que tienen.
- * Un curso, al aprobarlo, otorga una cantidad de creditos definidas en el curso.
- * Un curso requiere que para inscribirnos tengamos al menos la cantidad de creditos requeridas, y que haya cupo disponible
- * @author marti
- *
- */
-
-
 
 public class Curso {
 
